@@ -57,6 +57,12 @@
   }
 }
 
+@layer utilities {
+  .border-border {
+    border-color: hsl(var(--border));
+  }
+}
+
 /* Force dark theme for FUNCIONÁRIOS area */
 .funcionario-gradient {
   color-scheme: dark;

@@ -59,6 +59,12 @@
   }
 }
 
+@layer utilities {
+  .border-border {
+    border-color: hsl(var(--border));
+  }
+}
+
 /* Force dark theme for DEV area */
 .dev-gradient {
   color-scheme: dark;
