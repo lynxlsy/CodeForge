@@ -86,15 +86,33 @@
 }
 
 .funcionario-button {
-  @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors;
+  background-color: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  transition: background-color 0.2s;
+}
+
+.funcionario-button:hover {
+  background-color: hsl(var(--primary) / 0.9);
 }
 
 .funcionario-button-secondary {
-  @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors;
+  background-color: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  transition: background-color 0.2s;
+}
+
+.funcionario-button-secondary:hover {
+  background-color: hsl(var(--secondary) / 0.8);
 }
 
 .funcionario-button-destructive {
-  @apply bg-destructive text-destructive-foreground hover:bg-destructive/90 transition-colors;
+  background-color: hsl(var(--destructive));
+  color: hsl(var(--destructive-foreground));
+  transition: background-color 0.2s;
+}
+
+.funcionario-button-destructive:hover {
+  background-color: hsl(var(--destructive) / 0.9);
 }
 
 /* Mobile-specific improvements */
