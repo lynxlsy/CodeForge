@@ -36,7 +36,7 @@ export const metadata: Metadata = {
   creator: "CodeForge",
   publisher: "CodeForge",
   robots: "index, follow",
-  manifest: "/manifest.json",
+  manifest: "/manifest.webmanifest",
   openGraph: {
     type: "website",
     locale: "pt_BR",
@@ -69,14 +69,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/logo.svg", type: "image/svg+xml" },
-      { url: "/icons/icon-192x192.svg", sizes: "192x192", type: "image/svg+xml" },
-      { url: "/icons/icon-512x512.svg", sizes: "512x512", type: "image/svg+xml" },
+      { url: "/favicon.ico" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/pwa-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/pwa-512x512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
-      { url: "/logo.svg", type: "image/svg+xml" },
-      { url: "/icons/ios-icon-180x180.svg", sizes: "180x180", type: "image/svg+xml" },
-      { url: "/icons/ios-icon-152x152.svg", sizes: "152x152", type: "image/svg+xml" },
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
   other: {
@@ -111,9 +111,8 @@ export default function RootLayout({
         <meta name="msapplication-config" content="/browserconfig.xml" />
         
         {/* Apple Touch Icons */}
-        <link rel="apple-touch-icon" href="/logo.svg" />
-        <link rel="apple-touch-icon" sizes="152x152" href="/icons/ios-icon-152x152.svg" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/icons/ios-icon-180x180.svg" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         
         {/* Apple Startup Images */}
         <link rel="apple-touch-startup-image" href="/icons/ios-icon-180x180.svg" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)" />
@@ -123,7 +122,7 @@ export default function RootLayout({
         <link rel="apple-touch-startup-image" href="/icons/ios-icon-180x180.svg" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3)" />
         
         {/* PWA Manifest */}
-        <link rel="manifest" href="/manifest.json" />
+        <link rel="manifest" href="/manifest.webmanifest" />
         
         {/* Service Worker Registration */}
         <script
