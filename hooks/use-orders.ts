@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { collection, query, where, getDocs, orderBy, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore'
+import { collection, query, where, getDocs, orderBy, addDoc, updateDoc, deleteDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 
 export interface Order {
@@ -68,8 +68,8 @@ export function useOrders() {
       const ordersRef = collection(db, 'orders')
       const newOrder = {
         ...orderData,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
       }
       
       const docRef = await addDoc(ordersRef, newOrder)

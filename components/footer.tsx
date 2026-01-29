@@ -4,15 +4,23 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Logo } from "./logo"
 import { Separator } from "./ui/separator"
-import { Code, Download, Monitor, Smartphone } from "lucide-react"
+import { Code, Download, Monitor, Smartphone, Lock } from "lucide-react"
 import { DevModalManager } from "./dev/dev-modal-manager"
 import { Button } from "./ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
+import { Input } from "./ui/input"
+import { Label } from "./ui/label"
+import { Alert, AlertDescription } from "./ui/alert"
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
   const [isDevModalOpen, setIsDevModalOpen] = useState(false)
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
   const [isPC, setIsPC] = useState(false)
+  const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+  const [password, setPassword] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
     // Detectar se é PC
@@ -97,6 +105,55 @@ export function Footer() {
     ],
   }
 
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (password === "1227") {
+      setPasswordError("")
+      setIsAuthenticated(true)
+    } else {
+      setPasswordError("Senha incorreta")
+    }
+  }
+
+  const handleCopyUrl = async () => {
+    const url = "https://wonderful-paprenjak-bad82c.netlify.app/"
+    
+    try {
+      // Try modern clipboard API first
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url)
+        alert("URL copiada para a área de transferência!")
+      } else {
+        // Fallback method for older browsers or insecure contexts
+        const textArea = document.createElement("textarea")
+        textArea.value = url
+        textArea.style.position = "fixed"
+        textArea.style.left = "-999999px"
+        textArea.style.top = "-999999px"
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        
+        try {
+          document.execCommand("copy")
+          alert("URL copiada para a área de transferência!")
+        } catch (err) {
+          // If both methods fail, show the URL in an alert
+          alert(`Não foi possível copiar automaticamente. Copie manualmente:\n\n${url}`)
+        } finally {
+          textArea.remove()
+        }
+      }
+    } catch (err) {
+      // Final fallback - show URL in alert
+      alert(`Não foi possível copiar automaticamente. Copie manualmente:\n\n${url}`)
+    }
+  }
+
+  const handleRedirect = () => {
+    window.open("https://wonderful-paprenjak-bad82c.netlify.app/", "_blank")
+  }
+
   return (
     <>
       <footer className="bg-secondary text-secondary-foreground">
@@ -145,6 +202,17 @@ export function Footer() {
                       </Link>
                     </li>
                   ))}
+                  {category === "Suporte" && (
+                    <li>
+                      <button
+                        onClick={() => setIsPasswordModalOpen(true)}
+                        className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm flex items-center gap-1"
+                      >
+                        <Lock className="h-3 w-3" />
+                        Outros
+                      </button>
+                    </li>
+                  )}
                 </ul>
               </div>
             ))}
@@ -174,6 +242,75 @@ export function Footer() {
         isOpen={isDevModalOpen} 
         onClose={() => setIsDevModalOpen(false)} 
       />
+
+      {/* Password Modal */}
+      <Dialog open={isPasswordModalOpen} onOpenChange={setIsPasswordModalOpen}>
+        <DialogContent className="sm:max-w-md bg-background border border-gray-700">
+          <DialogHeader>
+            <DialogTitle className="text-foreground">Acesso Restrito</DialogTitle>
+          </DialogHeader>
+          
+          {!isAuthenticated ? (
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-foreground">Digite a senha:</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value)
+                    setPasswordError("")
+                  }}
+                  placeholder="Senha"
+                  className="bg-background border-gray-700 text-foreground"
+                />
+              </div>
+              
+              {passwordError && (
+                <Alert variant="destructive">
+                  <AlertDescription>{passwordError}</AlertDescription>
+                </Alert>
+              )}
+              
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90">
+                Acessar
+              </Button>
+            </form>
+          ) : (
+            <div className="space-y-4">
+              <p className="text-foreground">Acesso concedido! O que deseja fazer?</p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Button 
+                  onClick={handleCopyUrl}
+                  className="flex-1 bg-primary hover:bg-primary/90"
+                >
+                  Copiar URL
+                </Button>
+                <Button 
+                  onClick={handleRedirect}
+                  variant="outline"
+                  className="flex-1 border-gray-700 text-foreground hover:bg-accent"
+                >
+                  Abrir Link
+                </Button>
+              </div>
+              <Button 
+                onClick={() => {
+                  setIsPasswordModalOpen(false)
+                  setIsAuthenticated(false)
+                  setPassword("")
+                  setPasswordError("")
+                }}
+                variant="ghost"
+                className="w-full text-foreground/80 hover:text-foreground"
+              >
+                Fechar
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

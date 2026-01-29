@@ -18,6 +18,7 @@ import {
   DollarSign,
   Phone,
   Eye,
+  ShoppingCart,
   Trash2,
   Plus,
   FileText,
@@ -33,6 +34,7 @@ import { PricingManager } from "./pricing-manager"
 import { ContactManager } from "./contact-manager"
 import { IntelligentOptimizer } from "@/components/intelligent-optimizer"
 import { ToolLabelsManager } from "./tool-labels-manager"
+import { OrdersTable } from "./orders-table"
 
 export function DevContent() {
   const { user, logout } = useAuth()
@@ -272,6 +274,10 @@ export function DevContent() {
               <Settings className="w-4 h-4 mr-2" />
               Otimização
             </TabsTrigger>
+            <TabsTrigger value="orders" className="data-[state=active]:bg-blue-600/20 data-[state=active]:text-blue-300">
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Pedidos
+            </TabsTrigger>
           </TabsList>
 
           {/* Mobile Dropdown */}
@@ -295,6 +301,7 @@ export function DevContent() {
                 <option value="contacts" className="bg-gray-800 text-gray-200 py-2">📞 Contatos</option>
                 <option value="labels" className="bg-gray-800 text-gray-200 py-2">🏷️ Etiquetas</option>
                 <option value="optimization" className="bg-gray-800 text-gray-200 py-2">⚙️ Otimização</option>
+                <option value="orders" className="bg-gray-800 text-gray-200 py-2">🛒 Pedidos</option>
               </select>
               <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                 <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
@@ -447,6 +454,11 @@ export function DevContent() {
           {/* Tab Otimização */}
           <TabsContent value="optimization" className="space-y-4">
             <IntelligentOptimizer />
+          </TabsContent>
+
+          {/* Tab Pedidos */}
+          <TabsContent value="orders" className="space-y-4">
+            <OrdersTable />
           </TabsContent>
         </Tabs>
       </div>
