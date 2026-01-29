@@ -55,7 +55,7 @@
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    outline: 1px solid hsl(var(--border));
   }
 }
 
@@ -81,7 +81,10 @@
 }
 
 .dev-card {
-  @apply bg-card border border-border rounded-lg shadow-lg;
+  background-color: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .dev-button {

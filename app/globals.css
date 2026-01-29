@@ -168,10 +168,16 @@ html[data-theme="dark"] {
 
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    outline: 1px solid hsl(var(--border));
   }
   body {
     @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .border-border {
+    border-color: hsl(var(--border));
   }
 }
 
