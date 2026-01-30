@@ -209,16 +209,16 @@ export default function CriticasPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Avatar>
-                    <AvatarImage src={authUser?.photoURL || undefined} />
+                    <AvatarImage src={user?.photoURL || undefined} />
                     <AvatarFallback>
-                      {authUser?.displayName?.charAt(0) || authUser?.email?.charAt(0) || "U"}
+                      {user?.displayName?.charAt(0) || user?.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <CardTitle className="text-lg">
-                      {authUser?.displayName || authUser?.email}
+                      {user?.displayName || user?.email}
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground">{authUser?.email}</p>
+                    <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
                 </div>
                 <Button 
