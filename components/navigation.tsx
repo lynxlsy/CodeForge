@@ -55,6 +55,11 @@ export function Navigation() {
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
+                  {item.href === '/criticas' && (
+                    <span className="ml-2 px-1.5 py-0.5 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full animate-pulse shadow-lg">
+                      HOT
+                    </span>
+                  )}
                   {active && <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />}
                 </Link>
               )
@@ -97,6 +102,11 @@ export function Navigation() {
                 >
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
+                  {item.href === '/criticas' && (
+                    <span className="ml-auto px-1.5 py-0.5 text-xs font-bold bg-gradient-to-r from-red-500 to-orange-500 text-white rounded-full animate-pulse shadow-lg">
+                      HOT
+                    </span>
+                  )}
                   {active && <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse ml-auto" />}
                 </Link>
               )
