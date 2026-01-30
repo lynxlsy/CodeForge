@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDMpAYNiZz3kNou_iCBZwc8PzgSREgONKU",
   authDomain: "cdforge.firebaseapp.com",
   projectId: "cdforge",
-  storageBucket: "cdforge.firebasestorage.app",
+  storageBucket: "cdforge.appspot.com",
   messagingSenderId: "706766490167",
   appId: "1:706766490167:web:da36d5c880b2654d168db2",
   measurementId: "G-ERMTG9SM9Q"
