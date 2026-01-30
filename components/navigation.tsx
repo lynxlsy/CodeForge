@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { useState } from "react"
 import { usePathname } from "next/navigation"
-import { Menu, X, Home, Grid3X3, CreditCard, MessageCircle, FileText, Wrench } from "lucide-react"
+import { Menu, X, Home, Grid3X3, CreditCard, MessageCircle, FileText, Wrench, Star } from "lucide-react"
 import { Logo } from "./logo"
 import { Button } from "./ui/button"
 import { cn } from "@/lib/utils"
@@ -17,6 +17,7 @@ export function Navigation() {
     { href: "/categorias", label: "Categorias", icon: Grid3X3 },
     { href: "/forms", label: "Forms", icon: FileText },
     { href: "/ferramentas", label: "Ferramentas", icon: Wrench },
+    { href: "/criticas", label: "Críticas", icon: Star },
     { href: "/planos", label: "Planos", icon: CreditCard },
     { href: "/contato", label: "Contato", icon: MessageCircle },
   ]
