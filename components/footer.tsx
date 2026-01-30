@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState, useEffect } from "react"
 import { Logo } from "./logo"
 import { Separator } from "./ui/separator"
-import { Code, Download, Monitor, Smartphone, Lock } from "lucide-react"
+import { Code, Download, Monitor, Smartphone, Lock, Instagram } from "lucide-react"
 import { DevModalManager } from "./dev/dev-modal-manager"
 import { Button } from "./ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog"
@@ -97,6 +97,11 @@ export function Footer() {
       { href: "/sobre", label: "Sobre Nós" },
       { href: "/contato", label: "Contato" },
       { href: "/planos", label: "Planos" },
+      { 
+        href: "https://www.instagram.com/c0deforge?igsh=aW1ya2djeW9kbzZk&utm_source=qr", 
+        label: "Nosso Instagram: c0deforge",
+        external: true 
+      },
     ],
     Suporte: [
       { href: "/faq", label: "FAQ" },
@@ -194,12 +199,24 @@ export function Footer() {
                 <ul className="space-y-2">
                   {links.map((link) => (
                     <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm"
-                      >
-                        {link.label}
-                      </Link>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm flex items-center gap-1"
+                        >
+                          <Instagram className="h-3 w-3" />
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link
+                          href={link.href}
+                          className="text-secondary-foreground/80 hover:text-secondary-foreground transition-colors text-sm"
+                        >
+                          {link.label}
+                        </Link>
+                      )}
                     </li>
                   ))}
                   {category === "Suporte" && (
