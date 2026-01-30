@@ -29,7 +29,7 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 export default function CriticasPage() {
-  const { user: authUser, isAuthenticated, loading: authLoading } = useAuth()
+  const { user: authUser, isAuthenticated, loading: authLoading, loginWithGoogleUser } = useAuth()
   const [reviews, setReviews] = useState<Review[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -63,6 +63,8 @@ export default function CriticasPage() {
     if (!result.success) {
       setAuthError(result.error || "Erro ao fazer login com Google")
     } else {
+      // Usar o novo método de login do contexto
+      loginWithGoogleUser(result.user);
       toast({
         title: "Sucesso!",
         description: "Login realizado com Google",

@@ -8,6 +8,7 @@ interface AuthContextType {
   isAuthenticated: boolean
   user: DevUser | null
   login: (username: string, password: string) => Promise<boolean>
+  loginWithGoogleUser: (googleUser: any) => void
   logout: () => void
   checkAuthStatus: () => Promise<boolean>
   loading: boolean
@@ -174,6 +175,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  const loginWithGoogleUser = useCallback((googleUser: any) => {
+    console.log('🔐 Logging in with Google user:', googleUser);
+    
+    // Criar usuário compatível com o sistema
+    const user: DevUser = {
+      id: googleUser.uid,
+      username: googleUser.email?.split('@')[0] || 'google_user',
+      name: googleUser.displayName || googleUser.email?.split('@')[0] || 'Usuário Google',
+      email: googleUser.email || '',
+      role: 'funcionario',
+      type: 'funcionario',
+      lastLogin: new Date().toISOString(),
+      createdAt: new Date().toISOString(),
+      isActive: true
+    };
+    
+    // Criar sessão local
+    const sessionId = `google_session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    
+    // Salvar no localStorage
+    localStorage.setItem("cdforge-dev-session", sessionId);
+    localStorage.setItem("cdforge-user-data", JSON.stringify(user));
+    
+    // Atualizar estado
+    setIsAuthenticated(true);
+    setUser(user);
+    setSessionId(sessionId);
+    
+    console.log('✅ Google user logged in successfully');
+  }, []);
+
   const logout = useCallback(async () => {
     try {
       // Marcar usuário como offline no Firebase (se disponível)
@@ -258,7 +290,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user, login, logout, checkAuthStatus, loading, sessionId }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, loginWithGoogleUser, logout, checkAuthStatus, loading, sessionId }}>{children}</AuthContext.Provider>
   )
 }
 
