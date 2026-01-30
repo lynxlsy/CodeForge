@@ -11,7 +11,7 @@ import { auth } from './firebase'
 const googleProvider = new GoogleAuthProvider()
 
 // Flag para usar autenticação mockada temporariamente
-const USE_MOCK_AUTH = false
+const USE_MOCK_AUTH = true
 
 // Usuário mockado para testes
 const MOCK_USER = {
