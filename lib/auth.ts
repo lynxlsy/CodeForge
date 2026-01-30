@@ -24,15 +24,18 @@ const MOCK_USER = {
 export async function signInWithGoogle() {
   if (USE_MOCK_AUTH) {
     // Autenticação mockada para testes
+    console.log('Mock Google login successful');
     return { success: true, user: MOCK_USER }
   }
   
   try {
-    const result = await signInWithPopup(auth, googleProvider)
-    return { success: true, user: result.user }
+    console.log('Attempting Google popup login...');
+    const result = await signInWithPopup(auth, googleProvider);
+    console.log('Google login successful:', result.user);
+    return { success: true, user: result.user };
   } catch (error) {
-    console.error('Google sign in error:', error)
-    return { success: false, error: (error as Error).message }
+    console.error('Google sign in error:', error);
+    return { success: false, error: (error as Error).message };
   }
 }
 
