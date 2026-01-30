@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/contexts/auth-context"
+import { useAuthState } from "react-firebase-hooks/auth"
 import { auth } from "@/lib/firebase"
 import { 
   signInWithGoogle, 
@@ -29,7 +29,7 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 export default function CriticasPage() {
-  const { user: authUser, isAuthenticated, loading: authLoading, loginWithGoogleUser } = useAuth()
+  const [user, loading] = useAuthState(auth)
   const [reviews, setReviews] = useState<Review[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -63,8 +63,7 @@ export default function CriticasPage() {
     if (!result.success) {
       setAuthError(result.error || "Erro ao fazer login com Google")
     } else {
-      // Usar o novo método de login do contexto
-      loginWithGoogleUser(result.user);
+      console.log('✅ Google login completed, user:', result.user);
       toast({
         title: "Sucesso!",
         description: "Login realizado com Google",
@@ -90,7 +89,6 @@ export default function CriticasPage() {
       return
     }
     
-    const user = auth.currentUser
     if (!user?.uid) {
       setReviewError("Faça login para enviar")
       return
@@ -151,7 +149,7 @@ export default function CriticasPage() {
     }
   }
 
-  if (authLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -171,7 +169,7 @@ export default function CriticasPage() {
           </p>
         </div>
 
-        {!isAuthenticated ? (
+        {!user ? (
           // Login Section
           <Card className="mb-12">
             <CardHeader>
@@ -327,7 +325,7 @@ export default function CriticasPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
                         <Avatar>
-                          <AvatarImage src={review.user.photoURL} />
+                          <AvatarImage src={review.user.photoURL || undefined} />
                           <AvatarFallback>
                             {review.user.name.charAt(0)}
                           </AvatarFallback>
