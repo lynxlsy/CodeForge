@@ -1,13 +1,13 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuthState } from "react-firebase-hooks/auth"
-import { auth } from "@/lib/firebase"
+import { useAuth } from "@/contexts/auth-context"
 import { 
   signInWithGoogle, 
   signInWithEmail, 
   signUpWithEmail, 
-  signOutUser 
+  signOutUser,
+  getCurrentUser
 } from "@/lib/auth"
 import { addReview, listReviews, type Review } from "@/lib/reviews"
 import { StarRating } from "@/components/ui/star-rating"
@@ -31,7 +31,7 @@ import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 
 export default function CriticasPage() {
-  const [user, loading] = useAuthState(auth)
+  const { user: authUser, isAuthenticated, loading: authLoading } = useAuth()
   const [reviews, setReviews] = useState<Review[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -62,6 +62,38 @@ export default function CriticasPage() {
     loadReviews()
   }, [])
 
+  // Handle login
+  const handleLogin = async (credentials: { email: string; password: string }) => {
+    setAuthError("")
+    const result = await signInWithEmail(credentials.email, credentials.password)
+    if (!result.success) {
+      setAuthError(result.error || "Erro ao fazer login")
+    } else {
+      toast({
+        title: "Sucesso!",
+        description: "Login realizado",
+      })
+      setEmail("")
+      setPassword("")
+    }
+  }
+
+  // Handle signup
+  const handleSignup = async (credentials: { email: string; password: string }) => {
+    setAuthError("")
+    const result = await signUpWithEmail(credentials.email, credentials.password)
+    if (!result.success) {
+      setAuthError(result.error || "Erro ao criar conta")
+    } else {
+      toast({
+        title: "Sucesso!",
+        description: "Conta criada com sucesso",
+      })
+      setEmail("")
+      setPassword("")
+    }
+  }
+
   const handleGoogleSignIn = async () => {
     setAuthError("")
     const result = await signInWithGoogle()
@@ -82,19 +114,10 @@ export default function CriticasPage() {
       return
     }
     
-    const result = isSignUp 
-      ? await signUpWithEmail(email, password)
-      : await signInWithEmail(email, password)
-    
-    if (!result.success) {
-      setAuthError(result.error || `Erro ao ${isSignUp ? 'criar conta' : 'entrar'}`)
+    if (isSignUp) {
+      await handleSignup({ email, password })
     } else {
-      toast({
-        title: "Sucesso!",
-        description: isSignUp ? "Conta criada com sucesso" : "Login realizado",
-      })
-      setEmail("")
-      setPassword("")
+      await handleLogin({ email, password })
     }
   }
 
@@ -116,22 +139,29 @@ export default function CriticasPage() {
       return
     }
     
-    if (!user) {
+    if (!isAuthenticated) {
       setReviewError("Você precisa estar logado para enviar uma crítica")
       return
     }
     
     setIsSubmitting(true)
     
+    const currentUser = getCurrentUser()
+    if (!currentUser) {
+      setReviewError("Erro ao obter dados do usuário")
+      setIsSubmitting(false)
+      return
+    }
+    
     const result = await addReview({
       service: service.trim(),
       rating,
       message: message.trim(),
       user: {
-        uid: user.uid,
-        name: user.displayName || user.email?.split('@')[0] || "Usuário",
-        email: user.email!,
-        photoURL: user.photoURL || undefined
+        uid: currentUser.uid,
+        name: currentUser.displayName || currentUser.email?.split('@')[0] || "Usuário",
+        email: currentUser.email!,
+        photoURL: currentUser.photoURL || undefined
       }
     })
     
@@ -166,7 +196,7 @@ export default function CriticasPage() {
     }
   }
 
-  if (loading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -186,7 +216,7 @@ export default function CriticasPage() {
           </p>
         </div>
 
-        {!user ? (
+        {!isAuthenticated ? (
           // Login Section
           <Card className="mb-12">
             <CardHeader>
@@ -292,16 +322,16 @@ export default function CriticasPage() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Avatar>
-                    <AvatarImage src={user.photoURL || undefined} />
+                    <AvatarImage src={authUser?.photoURL || undefined} />
                     <AvatarFallback>
-                      {user.displayName?.charAt(0) || user.email?.charAt(0) || "U"}
+                      {authUser?.displayName?.charAt(0) || authUser?.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                   <div>
                     <CardTitle className="text-lg">
-                      {user.displayName || user.email}
+                      {authUser?.displayName || authUser?.email}
                     </CardTitle>
-                    <p className="text-sm text-muted-foreground">{user.email}</p>
+                    <p className="text-sm text-muted-foreground">{authUser?.email}</p>
                   </div>
                 </div>
                 <Button 
