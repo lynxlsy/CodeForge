@@ -10,7 +10,7 @@ export interface Review {
     uid: string
     name: string
     email: string
-    photoURL?: string
+    photoURL?: string | null
   }
   createdAt: Timestamp | null
 }

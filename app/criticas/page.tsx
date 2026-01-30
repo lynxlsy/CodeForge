@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/contexts/auth-context"
+import { auth } from "@/lib/firebase"
 import { 
   signInWithGoogle, 
   signInWithEmail, 
   signUpWithEmail, 
-  signOutUser,
-  getCurrentUser
+  signOutUser
 } from "@/lib/auth"
 import { addReview, listReviews, type Review } from "@/lib/reviews"
 import { StarRating } from "@/components/ui/star-rating"
@@ -139,50 +139,54 @@ export default function CriticasPage() {
       return
     }
     
-    if (!isAuthenticated) {
-      setReviewError("Você precisa estar logado para enviar uma crítica")
+    const user = auth.currentUser
+    if (!user?.uid) {
+      setReviewError("Faça login para enviar")
       return
     }
     
     setIsSubmitting(true)
     
-    const currentUser = getCurrentUser()
-    if (!currentUser) {
-      setReviewError("Erro ao obter dados do usuário")
-      setIsSubmitting(false)
-      return
-    }
-    
-    const result = await addReview({
-      service: service.trim(),
-      rating,
-      message: message.trim(),
-      user: {
-        uid: currentUser.uid,
-        name: currentUser.displayName || currentUser.email?.split('@')[0] || "Usuário",
-        email: currentUser.email!,
-        photoURL: currentUser.photoURL || undefined
-      }
-    })
-    
-    setIsSubmitting(false)
-    
-    if (result.success) {
-      toast({
-        title: "Crítica enviada!",
-        description: "Sua avaliação foi registrada com sucesso",
+    try {
+      const result = await addReview({
+        service: service.trim(),
+        rating,
+        message: message.trim(),
+        user: {
+          uid: user.uid,
+          email: user.email ?? '',
+          name: user.displayName ?? (user.email ? user.email.split('@')[0] : 'Usuário'),
+          photoURL: user.photoURL ?? undefined
+        }
       })
       
-      // Reset form
-      setService("")
-      setRating(0)
-      setMessage("")
-      
-      // Refresh reviews
-      const updatedReviews = await listReviews(20)
-      setReviews(updatedReviews)
-    } else {
-      setReviewError(result.error || "Erro ao enviar crítica")
+      if (result.success) {
+        toast({
+          title: "Crítica enviada!",
+          description: "Sua avaliação foi registrada com sucesso",
+        })
+        
+        // Reset form
+        setService("")
+        setRating(0)
+        setMessage("")
+        
+        // Refresh reviews
+        const updatedReviews = await listReviews(20)
+        setReviews(updatedReviews)
+      } else {
+        setReviewError(result.error || "Erro ao enviar crítica")
+      }
+    } catch (error: any) {
+      console.error('Erro ao enviar crítica:', error)
+      setReviewError(error.message || "Erro desconhecido ao enviar crítica")
+      toast({
+        title: "Erro",
+        description: error.message || "Falha ao enviar crítica",
+        variant: "destructive"
+      })
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
